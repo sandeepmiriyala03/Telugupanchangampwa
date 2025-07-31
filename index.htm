@@ -4,97 +4,168 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>తెలుగు పంచాంగం జనరేటర్</title>
-    <!-- Tailwind CSS CDN for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- PWA Manifest Link -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="manifest" href="/manifest.json">
     <style>
-        /* Custom styles for Inter font and rounded corners */
+        /* Base styles using Inter font */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Light blue-gray background */
+            background-color: #e0f2f7; /* Lighter, calming blue background */
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            color: #263238; /* Dark blue-gray for general text */
         }
         .container {
             background-color: #ffffff;
-            padding: 30px;
-            border-radius: 15px; /* More rounded corners */
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Softer shadow */
-            max-width: 600px;
+            padding: 35px; /* Increased padding */
+            border-radius: 20px; /* Even more rounded corners */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Stronger, softer shadow */
+            max-width: 650px; /* Slightly wider container */
             width: 100%;
             text-align: center;
+            border: 1px solid #cfd8dc; /* Subtle border */
         }
         h1 {
-            color: #2c3e50; /* Darker title color */
-            margin-bottom: 25px;
-            font-size: 2.25rem; /* Larger title */
-            font-weight: 700;
+            color: #00796b; /* Teal color for main title */
+            margin-bottom: 30px; /* More space below title */
+            font-size: 2.5rem; /* Larger title */
+            font-weight: 800; /* Extra bold */
+            letter-spacing: -0.02em; /* Tighter letter spacing for impact */
         }
         .input-group {
             display: flex;
             justify-content: center;
-            gap: 15px; /* Increased gap */
-            margin-bottom: 25px;
-            flex-wrap: wrap; /* Allow wrapping on small screens */
+            gap: 20px; /* Increased gap between selects */
+            margin-bottom: 30px; /* More space below inputs */
+            flex-wrap: wrap;
         }
         select {
-            padding: 12px 18px; /* More padding */
-            border: 1px solid #cbd5e0; /* Lighter border */
-            border-radius: 10px; /* Rounded select boxes */
-            font-size: 1rem;
-            color: #4a5568;
-            background-color: #f7fafc; /* Off-white background */
+            appearance: none; /* Remove default arrow */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding: 14px 22px; /* More padding */
+            border: 2px solid #b0bec5; /* Slightly darker border */
+            border-radius: 12px; /* More rounded select boxes */
+            font-size: 1.1rem; /* Slightly larger font */
+            color: #455a64; /* Darker text for selects */
+            background-color: #f5f5f5; /* Light gray background */
             cursor: pointer;
-            transition: all 0.2s ease-in-out;
+            transition: all 0.3s ease-in-out; /* Smoother transitions */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E"); /* Custom SVG arrow */
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.2em;
+        }
+        select:hover {
+            border-color: #78909c; /* Darker border on hover */
+            background-color: #eceff1; /* Slightly darker background on hover */
         }
         select:focus {
             outline: none;
-            border-color: #4299e1; /* Blue focus border */
-            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Blue glow on focus */
+            border-color: #00796b; /* Teal focus border */
+            box-shadow: 0 0 0 4px rgba(0, 121, 107, 0.3); /* Teal glow on focus */
+            background-color: #e0f2f7; /* Light blue on focus */
         }
-        button {
-            background-color: #38a169; /* Green button */
+        .main-button {
+            background-color: #00796b; /* Teal button */
             color: white;
-            padding: 14px 28px; /* Larger button */
-            border-radius: 10px;
+            padding: 16px 32px; /* Even larger button */
+            border-radius: 12px;
             border: none;
             cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(56, 161, 105, 0.3); /* Green shadow */
+            font-size: 1.2rem; /* Larger font */
+            font-weight: 700; /* Bold */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 15px rgba(0, 121, 107, 0.4); /* Teal shadow */
+            margin-top: 20px; /* Added margin */
+            letter-spacing: 0.02em;
         }
-        button:hover {
-            background-color: #2f855a; /* Darker green on hover */
-            transform: translateY(-2px); /* Slight lift effect */
+        .main-button:hover {
+            background-color: #004d40; /* Darker teal on hover */
+            transform: translateY(-3px); /* More pronounced lift */
+            box-shadow: 0 8px 20px rgba(0, 121, 107, 0.5); /* Stronger shadow on hover */
         }
-        button:active {
+        .main-button:active {
             transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(56, 161, 105, 0.3);
+            box-shadow: 0 3px 8px rgba(0, 121, 107, 0.3);
         }
+
         #output {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #e2e8f0; /* Light gray background for output */
-            border-radius: 10px;
+            margin-top: 35px; /* More space above output */
+            padding: 25px; /* More padding */
+            background-color: #f0f4f7; /* Very light blue-gray background for output */
+            border-radius: 12px;
             text-align: left;
-            color: #2d3748; /* Darker text */
-            line-height: 1.8; /* Better readability */
-            font-size: 1.1rem;
-            min-height: 100px; /* Ensure it has some height even when empty */
+            color: #37474f; /* Darker text */
+            line-height: 1.9; /* Better readability */
+            font-size: 1.15rem; /* Slightly larger font */
+            min-height: 120px; /* Ensure it has some height even when empty */
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
+            border: 1px dashed #b0bec5; /* Dashed border for a distinct look */
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05); /* Inner shadow for depth */
         }
+        #output p {
+            font-weight: 500; /* Medium weight for output text */
+        }
+
         .disclaimer {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #718096; /* Gray text for disclaimer */
+            margin-top: 25px; /* More space above disclaimer */
+            font-size: 0.95rem; /* Slightly larger font for disclaimer */
+            color: #78909c; /* Lighter gray text for disclaimer */
+            line-height: 1.5;
+        }
+
+        /* Install App Button Specific Styling */
+        #installAppButton {
+            background-color: #2196f3; /* Bright blue for install button */
+            box-shadow: 0 6px 15px rgba(33, 150, 243, 0.4);
+            margin-bottom: 10px; /* Space below if it appears */
+            display: none; /* Hidden by default */
+        }
+        #installAppButton:hover {
+            background-color: #1976d2; /* Darker blue on hover */
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.5);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .container {
+                padding: 25px;
+                border-radius: 15px;
+            }
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 25px;
+            }
+            .input-group {
+                flex-direction: column;
+                gap: 15px;
+            }
+            select, .main-button {
+                width: 100%;
+            }
+            select {
+                padding: 12px 18px;
+                font-size: 1rem;
+            }
+            .main-button {
+                padding: 14px 28px;
+                font-size: 1.1rem;
+            }
+            #output {
+                padding: 20px;
+                font-size: 1rem;
+            }
+            .disclaimer {
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
@@ -106,24 +177,17 @@
             <select id="monthSelect"></select>
             <select id="yearSelect"></select>
         </div>
-        <button onclick="generatePanchangam()">పంచాంగం రూపొందించండి</button>
+        <button class="main-button" onclick="generatePanchangam()">పంచాంగం రూపొందించండి</button>
+        <button id="installAppButton" class="main-button">యాప్‌ను ఇన్‌స్టాల్ చేయండి</button>
+
         <div id="output">
             <p>తేదీని ఎంచుకుని, 'పంచాంగం రూపొందించండి' బటన్‌ను నొక్కండి.</p>
         </div>
         <p class="disclaimer">
             గమనిక: ఇది ఒక సరళీకృత పంచాంగం జనరేటర్. ఖచ్చితమైన ఖగోళ గణనలు లేకుండా తిథి, నక్షత్రం, యోగం, తెలుగు మాసం వంటివి సుమారుగా మాత్రమే చూపబడతాయి.
+            <br>
+            సందీప్ మిరియాల ద్వారా AI ఉపయోగించి రూపొందించబడింది.
         </p>
-    </div>
-
-    <!-- Offline Popup Modal -->
-    <div id="offlineModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 hidden">
-        <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm mx-auto">
-            <h2 class="text-2xl font-bold text-red-600 mb-4">మీరు ఆఫ్‌లైన్‌లో ఉన్నారు!</h2>
-            <p class="text-gray-700 mb-6">ఇంటర్నెట్ కనెక్షన్ అందుబాటులో లేదు. దయచేసి మీ కనెక్షన్‌ని తనిఖీ చేయండి.</p>
-            <button onclick="document.getElementById('offlineModal').classList.add('hidden')" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
-                సరే
-            </button>
-        </div>
     </div>
 
     <script>
@@ -132,7 +196,9 @@
         const monthSelect = document.getElementById('monthSelect');
         const yearSelect = document.getElementById('yearSelect');
         const outputDiv = document.getElementById('output');
-        const offlineModal = document.getElementById('offlineModal'); // Reference to the offline modal
+        const installAppButton = document.getElementById('installAppButton'); // Reference to the install button
+
+        let deferredPrompt; // To store the beforeinstallprompt event
 
         // Telugu month names (global scope)
         const months = [
@@ -284,7 +350,7 @@
             let tithi = tithiNames[tithiIndex];
             if (day === 15) {
                 tithi = tithiNames[14]; // Pournami
-            } else if (day === 30 || day === new Date(year, month + 1, 0).getDate()) { // Last day of month is Amavasya
+            } else if (day === new Date(year, month + 1, 0).getDate()) { // Last day of month is Amavasya
                 tithi = tithiNames[29]; // Amavasya (index 29 in the combined list)
             }
 
@@ -328,25 +394,50 @@
             });
         }
 
-        // Offline Popup Logic
-        function updateOnlineStatus() {
-            // Check the online status and log it to the console for debugging
-            console.log('Navigator online status:', navigator.onLine);
-            if (navigator.onLine) {
-                offlineModal.classList.add('hidden');
-            } else {
-                offlineModal.classList.remove('hidden');
-            }
-        }
-
-        window.addEventListener('online', updateOnlineStatus);
-        window.addEventListener('offline', updateOnlineStatus);
-
-        // Initial check for online status with a slight delay
-        // This helps ensure the DOM is fully ready and the browser has determined network status.
-        window.addEventListener('load', () => {
-            setTimeout(updateOnlineStatus, 500); // 500ms delay
+        // --- PWA Install App Popup Logic ---
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the default mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            // Update UI to notify the user they can install the PWA
+            installAppButton.style.display = 'block'; // Show the custom install button
+            console.log('\'beforeinstallprompt\' event was fired.');
         });
+
+        installAppButton.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                // Hide the install button as it will be used now
+                installAppButton.style.display = 'none';
+
+                // Show the install prompt
+                deferredPrompt.prompt();
+
+                // Wait for the user to respond to the prompt
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+
+                // We've used the prompt, so set deferredPrompt to null
+                deferredPrompt = null;
+
+                // Optionally, hide the button again if the user dismisses it or installs
+                // (the 'appinstalled' event can also handle hiding after a successful install)
+                if (outcome === 'accepted') {
+                    console.log('App was installed');
+                } else {
+                    console.log('App installation dismissed');
+                }
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            // Hide the install button if the app is successfully installed
+            installAppButton.style.display = 'none';
+            deferredPrompt = null; // Clear the prompt reference
+            console.log('PWA was installed via custom prompt or browser UI');
+        });
+        // --- End PWA Install App Popup Logic ---
+
     </script>
 </body>
 </html>
