@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>తెలుగు పంచాంగం జనరేటర్</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PWA Manifest Link -->
+    <link rel="manifest" href="/manifest.json">
+    <style>
+        /* Custom styles for Inter font and rounded corners */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Softer shadow */
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50; /* Darker title color */
+            margin-bottom: 25px;
+            font-size: 2.25rem; /* Larger title */
+            font-weight: 700;
+        }
+        .input-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px; /* Increased gap */
+            margin-bottom: 25px;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+        select {
+            padding: 12px 18px; /* More padding */
+            border: 1px solid #cbd5e0; /* Lighter border */
+            border-radius: 10px; /* Rounded select boxes */
+            font-size: 1rem;
+            color: #4a5568;
+            background-color: #f7fafc; /* Off-white background */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        select:focus {
+            outline: none;
+            border-color: #4299e1; /* Blue focus border */
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Blue glow on focus */
+        }
+        button {
+            background-color: #38a169; /* Green button */
+            color: white;
+            padding: 14px 28px; /* Larger button */
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(56, 161, 105, 0.3); /* Green shadow */
+        }
+        button:hover {
+            background-color: #2f855a; /* Darker green on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(56, 161, 105, 0.3);
+        }
+        #output {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e2e8f0; /* Light gray background for output */
+            border-radius: 10px;
+            text-align: left;
+            color: #2d3748; /* Darker text */
+            line-height: 1.8; /* Better readability */
+            font-size: 1.1rem;
+            min-height: 100px; /* Ensure it has some height even when empty */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .disclaimer {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #718096; /* Gray text for disclaimer */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>తెలుగు పంచాంగం జనరేటర్</h1>
+        <div class="input-group">
+            <select id="daySelect"></select>
+            <select id="monthSelect"></select>
+            <select id="yearSelect"></select>
+        </div>
+        <button onclick="generatePanchangam()">పంచాంగం రూపొందించండి</button>
+        <div id="output">
+            <p>తేదీని ఎంచుకుని, 'పంచాంగం రూపొందించండి' బటన్‌ను నొక్కండి.</p>
+        </div>
+        <p class="disclaimer">
+            గమనిక: ఇది ఒక సరళీకృత పంచాంగం జనరేటర్. ఖచ్చితమైన ఖగోళ గణనలు లేకుండా తిథి, నక్షత్రం, యోగం, తెలుగు మాసం వంటివి సుమారుగా మాత్రమే చూపబడతాయి.
+        </p>
+    </div>
+
+    <!-- Offline Popup Modal -->
+    <div id="offlineModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm mx-auto">
+            <h2 class="text-2xl font-bold text-red-600 mb-4">మీరు ఆఫ్‌లైన్‌లో ఉన్నారు!</h2>
+            <p class="text-gray-700 mb-6">ఇంటర్నెట్ కనెక్షన్ అందుబాటులో లేదు. దయచేసి మీ కనెక్షన్‌ని తనిఖీ చేయండి.</p>
+            <button onclick="document.getElementById('offlineModal').classList.add('hidden')" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                సరే
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Get references to HTML elements
+        const daySelect = document.getElementById('daySelect');
+        const monthSelect = document.getElementById('monthSelect');
+        const yearSelect = document.getElementById('yearSelect');
+        const outputDiv = document.getElementById('output');
+        const offlineModal = document.getElementById('offlineModal'); // Reference to the offline modal
+
+        // Telugu month names (global scope)
+        const months = [
+            'జనవరి', 'ఫిబ్రవరి', 'మార్చి', 'ఏప్రిల్', 'మే', 'జూన్',
+            'జూలై', 'ఆగస్టు', 'సెప్టెంబర్', 'అక్టోబర్', 'నవంబర్', 'డిసెంబర్'
+        ];
+
+        // Populate day, month, and year dropdowns
+        function populateDateSelectors() {
+            // Populate days (1-31)
+            for (let i = 1; i <= 31; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                daySelect.appendChild(option);
+            }
+
+            // Populate months (0-11 for Date object)
+            months.forEach((month, index) => {
+                const option = document.createElement('option');
+                option.value = index; // Month index (0-11)
+                option.textContent = month;
+                monthSelect.appendChild(option);
+            });
+
+            // Populate years (100 years past, 100 years future from current)
+            const currentYear = new Date().getFullYear();
+            const startYear = currentYear - 100;
+            const endYear = currentYear + 100;
+            for (let i = startYear; i <= endYear; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                yearSelect.appendChild(option);
+            }
+
+            // Set current date as default
+            const today = new Date();
+            daySelect.value = today.getDate();
+            monthSelect.value = today.getMonth();
+            yearSelect.value = today.getFullYear();
+        }
+
+        // Telugu day names
+        const teluguDayNames = [
+            'ఆదివారం', 'సోమవారం', 'మంగళవారం', 'బుధవారం',
+            'గురువారం', 'శుక్రవారం', 'శనివారం'
+        ];
+
+        // Telugu Samvatsara (60-year cycle)
+        // Base year for Prabhava is 1987.
+        const samvatsaraNames = [
+            'ప్రభవ', 'విభవ', 'శుక్ల', 'ప్రమోదూత', 'ప్రజోత్పత్తి', 'అంగీరస', 'శ్రీముఖ',
+            'భావ', 'యువ', 'ధాత', 'ఈశ్వర', 'బహుధాన్య', 'ప్రమాది', 'విక్రమ', 'వృష',
+            'చిత్రభాను', 'స్వభాను', 'తారణ', 'పార్థివ', 'వ్యయ', 'సర్వజిత్', 'సర్వధారి',
+            'విరోధి', 'వికృతి', 'ఖర', 'నందన', 'విజయ', 'జయ', 'మన్మథ', 'దుర్ముఖి',
+            'హేవిళంబి', 'విళంబి', 'వికారి', 'శార్వరి', 'ప్లవ', 'శుభకృత్', 'శోభకృత్',
+            'క్రోధి', 'విశ్వావసు', 'పరాభవ', 'ప్లవంగ', 'కీలక', 'సౌమ్య', 'సాధారణ',
+            'విరోధికృత్', 'పరీధావి', 'ప్రమాదీచ', 'ఆనంద', 'రాక్షస', 'నల', 'పింగళ',
+            'కాళయుక్తి', 'సిద్ధార్థి', 'రౌద్రి', 'దుర్మతి', 'దుందుభి', 'రుధిరోద్గారి',
+            'రక్తాక్షి', 'క్రోధన', 'క్షయ'
+        ];
+
+        function getTeluguSamvatsara(year) {
+            const baseYear = 1987; // Prabhava started in 1987 (approximate for calculation)
+            const index = (year - baseYear) % 60;
+            return samvatsaraNames[index < 0 ? index + 60 : index]; // Handle negative results for past years
+        }
+
+        // Simplified Rahukalam based on day of the week
+        // Note: Actual Rahukalam varies by sunrise/sunset and location. This is a fixed approximation.
+        const rahukalamTimes = {
+            0: 'సాయంత్రం 4:30 నుండి 6:00 వరకు', // Sunday
+            1: 'ఉదయం 7:30 నుండి 9:00 వరకు',    // Monday
+            2: 'మధ్యాహ్నం 3:00 నుండి 4:30 వరకు', // Tuesday
+            3: 'మధ్యాహ్నం 12:00 నుండి 1:30 వరకు', // Wednesday
+            4: 'మధ్యాహ్నం 1:30 నుండి 3:00 వరకు', // Thursday
+            5: 'ఉదయం 10:30 నుండి 12:00 వరకు',   // Friday
+            6: 'ఉదయం 9:00 నుండి 10:30 వరకు'    // Saturday
+        };
+
+        // Simplified Telugu Month names (mapping Gregorian to approximate Telugu lunar month)
+        // This is a very rough approximation and not astronomically accurate.
+        const simplifiedTeluguMonths = [
+            'పుష్యమాసం', 'మాఘమాసం', 'ఫాల్గుణమాసం', 'చైత్రమాసం',
+            'వైశాఖమాసం', 'జ్యేష్ఠమాసం', 'ఆషాఢమాసం', 'శ్రావణమాసం',
+            'భాద్రపదమాసం', 'ఆశ్వయుజమాసం', 'కార్తీకమాసం', 'మార్గశిరమాసం'
+        ];
+
+        // Simplified Tithis (Lunar Days)
+        // This is a very rough approximation based on day of month.
+        const tithiNames = [
+            'పాడ్యమి', 'విదియ', 'తదియ', 'చవితి', 'పంచమి', 'షష్ఠి', 'సప్తమి',
+            'అష్టమి', 'నవమి', 'దశమి', 'ఏకాదశి', 'ద్వాదశి', 'త్రయోదశి', 'చతుర్దశి',
+            'పౌర్ణమి', // Full Moon (15th tithi of Shukla Paksha)
+            'పాడ్యమి', 'విదియ', 'తదియ', 'చవితి', 'పంచమి', 'షష్ఠి', 'సప్తమి',
+            'అష్టమి', 'నవమి', 'దశమి', 'ఏకాదశి', 'ద్వాదశి', 'త్రయోదశి', 'చతుర్దశి',
+            'అమావాస్య' // New Moon (15th tithi of Krishna Paksha)
+        ];
+
+        // Simplified Nakshatras (Lunar Mansions)
+        // This is a very rough approximation based on day of month.
+        const nakshatraNames = [
+            'అశ్విని', 'భరణి', 'కృత్తిక', 'రోహిణి', 'మృగశిర', 'ఆరుద్ర', 'పునర్వసు',
+            'పుష్యమి', 'ఆశ్లేష', 'మఖ', 'పూర్వ ఫల్గుణి', 'ఉత్తర ఫల్గుణి', 'హస్త',
+            'చిత్త', 'స్వాతి', 'విశాఖ', 'అనురాధ', 'జ్యేష్ఠ', 'మూల', 'పూర్వాషాఢ',
+            'ఉత్తరాషాఢ', 'శ్రవణం', 'ధనిష్ఠ', 'శతభిషం', 'పూర్వ భాద్రపద',
+            'ఉత్తర భాద్రపద', 'రేవతి'
+        ];
+
+        // Simplified Yogas
+        // This is a very rough approximation based on day of month.
+        const yogaNames = [
+            'విష్కంభం', 'ప్రీతి', 'ఆయుష్మాన్', 'సౌభాగ్య', 'శోభన', 'అతిగండ',
+            'సుకర్మ', 'ధృతి', 'శూల', 'గండ', 'వృద్ధి', 'ధృవ', 'వ్యాఘాత',
+            'హర్షణ', 'వజ్ర', 'సిద్ధి', 'వ్యతీపాత', 'వరీయాన్', 'పరిఘ', 'శివ',
+            'సిద్ధ', 'సాధ్య', 'శుభ', 'శుక్ల', 'బ్రహ్మ', 'ఐంద్ర', 'వైధృతి'
+        ];
+
+        // Function to generate Panchangam
+        function generatePanchangam() {
+            const day = parseInt(daySelect.value);
+            const month = parseInt(monthSelect.value); // 0-indexed
+            const year = parseInt(yearSelect.value);
+
+            const selectedDate = new Date(year, month, day);
+
+            // Get day of the week in Telugu
+            const dayOfWeekIndex = selectedDate.getDay(); // 0 for Sunday, 6 for Saturday
+            const teluguDay = teluguDayNames[dayOfWeekIndex];
+
+            // Get Samvatsara
+            const teluguSamvatsara = getTeluguSamvatsara(year);
+
+            // Get simplified Rahukalam
+            const rahukalam = rahukalamTimes[dayOfWeekIndex];
+
+            // Get simplified Telugu month (approximation)
+            const teluguMonth = simplifiedTeluguMonths[month];
+
+            // Determine Paksham (Shukla/Krishna - waxing/waning) based on day of month
+            // This is a very basic approximation.
+            const paksham = day <= 15 ? 'శుద్ధ' : 'బహుళ';
+
+            // Get simplified Tithi (approximation)
+            // For simplicity, map day 1-15 to 1-15 tithis, and day 16-30 to 1-15 tithis again.
+            // If day is 15, it's Pournami (Full Moon). If day is 30, it's Amavasya (New Moon).
+            let tithiIndex = (day - 1) % 15;
+            let tithi = tithiNames[tithiIndex];
+            if (day === 15) {
+                tithi = tithiNames[14]; // Pournami
+            } else if (day === 30 || day === new Date(year, month + 1, 0).getDate()) { // Last day of month is Amavasya
+                tithi = tithiNames[29]; // Amavasya (index 29 in the combined list)
+            }
+
+
+            // Get simplified Nakshatra (approximation)
+            const nakshatraIndex = (day - 1) % nakshatraNames.length;
+            const nakshatra = nakshatraNames[nakshatraIndex];
+
+            // Get simplified Yoga (approximation)
+            const yogaIndex = (day - 1) % yogaNames.length;
+            const yoga = yogaNames[yogaIndex];
+
+            // Format the date for display
+            const formattedDate = `${day} ${months[month]}, ${year}`;
+
+            // Construct the output string in Telugu
+            const outputText = `
+                ఈరోజు, ${formattedDate}, తెలుగు పంచాంగం ప్రకారం, ${teluguDay}, శ్రీ ${teluguSamvatsara} నామ సంవత్సరంలో ${teluguMonth}, ${paksham} ${tithi}.
+                ఈ రోజున ${nakshatra} నక్షత్రం మరియు ${yoga} యోగం ఉన్నాయి.
+                రాహుకాలం ${rahukalam} వరకు ఉంటుంది.
+            `;
+
+            outputDiv.innerHTML = `<p>${outputText.trim()}</p>`;
+        }
+
+        // Initialize selectors on page load
+        window.onload = populateDateSelectors;
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                console.log('Attempting to register Service Worker from:', window.location.origin + '/service-worker.js');
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered: ', registration);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed: ', error);
+                        console.error('This often happens if the app is not served over HTTPS or a valid local server.');
+                    });
+            });
+        }
+
+        // Offline Popup Logic
+        function updateOnlineStatus() {
+            // Check the online status and log it to the console for debugging
+            console.log('Navigator online status:', navigator.onLine);
+            if (navigator.onLine) {
+                offlineModal.classList.add('hidden');
+            } else {
+                offlineModal.classList.remove('hidden');
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        // Initial check for online status with a slight delay
+        // This helps ensure the DOM is fully ready and the browser has determined network status.
+        window.addEventListener('load', () => {
+            setTimeout(updateOnlineStatus, 500); // 500ms delay
+        });
+    </script>
+</body>
+</html>

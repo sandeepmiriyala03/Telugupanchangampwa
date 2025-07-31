@@ -1,0 +1,21 @@
+{
+  "name": "తెలుగు పంచాంగం",
+  "short_name": "పంచాంగం",
+  "description": "తేదీ ఆధారంగా సరళీకృత తెలుగు పంచాంగాన్ని రూపొందించండి.",
+  "start_url": "/panchangam.html",
+  "display": "standalone",
+  "background_color": "#f0f4f8",
+  "theme_color": "#38a169",
+  "icons": [
+    {
+      "src": "icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
