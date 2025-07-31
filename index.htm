@@ -36,6 +36,31 @@
             font-weight: 800; /* Extra bold */
             letter-spacing: -0.02em; /* Tighter letter spacing for impact */
         }
+        .menu-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+        .menu-bar-button {
+            background-color: #2196f3;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3);
+            display: none; /* Hidden by default, shown by JS */
+        }
+        .menu-bar-button:hover {
+            background-color: #1976d2;
+            transform: translateY(-2px);
+        }
+        .menu-bar-button:active {
+            transform: translateY(0);
+        }
         .input-group {
             display: flex;
             justify-content: center;
@@ -122,18 +147,6 @@
             line-height: 1.5;
         }
 
-        /* Install App Button Specific Styling */
-        #installAppButton {
-            background-color: #2196f3; /* Bright blue for install button */
-            box-shadow: 0 6px 15px rgba(33, 150, 243, 0.4);
-            margin-bottom: 10px; /* Space below if it appears */
-            display: none; /* Hidden by default */
-        }
-        #installAppButton:hover {
-            background-color: #1976d2; /* Darker blue on hover */
-            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.5);
-        }
-
         /* Responsive adjustments */
         @media (max-width: 640px) {
             .container {
@@ -143,6 +156,9 @@
             h1 {
                 font-size: 2rem;
                 margin-bottom: 25px;
+            }
+            .menu-bar {
+                justify-content: center;
             }
             .input-group {
                 flex-direction: column;
@@ -171,6 +187,10 @@
 </head>
 <body>
     <div class="container">
+        <div class="menu-bar">
+            <button id="installAppButton" class="menu-bar-button">యాప్‌ను డౌన్‌లోడ్ చేయండి</button>
+        </div>
+
         <h1>తెలుగు పంచాంగం జనరేటర్</h1>
         <div class="input-group">
             <select id="daySelect"></select>
@@ -178,7 +198,6 @@
             <select id="yearSelect"></select>
         </div>
         <button class="main-button" onclick="generatePanchangam()">పంచాంగం రూపొందించండి</button>
-        <button id="installAppButton" class="main-button">యాప్‌ను ఇన్‌స్టాల్ చేయండి</button>
 
         <div id="output">
             <p>తేదీని ఎంచుకుని, 'పంచాంగం రూపొందించండి' బటన్‌ను నొక్కండి.</p>

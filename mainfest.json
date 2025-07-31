@@ -1,19 +1,19 @@
 {
-  "name": "తెలుగు పంచాంగం",
-  "short_name": "పంచాంగం",
-  "description": "తేదీ ఆధారంగా సరళీకృత తెలుగు పంచాంగాన్ని రూపొందించండి.",
-  "start_url": "/panchangam.html",
+  "name": "తెలుగు పంచాంగం జనరేటర్",
+  "short_name": "తెలుగు పంచాంగం",
+  "description": "ఈరోజూ పంచాంగం చూడటానికి ఒక సులభమైన యాప్.",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#f0f4f8",
-  "theme_color": "#38a169",
+  "background_color": "#ffffff",
+  "theme_color": "#00796b",
   "icons": [
     {
-      "src": "icon-192x192.png",
+      "src": "/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512x512.png",
+      "src": "/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
