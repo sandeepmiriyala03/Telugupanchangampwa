@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <title>తెలుగు పంచాంగం - ఆగస్టు 2025</title>
   <link rel="manifest" href="manifest.json" />
+  <link rel=
   <meta name="theme-color" content="#ff9933" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <script src="panchang.js" defer></script>
 
   <style>
@@ -22,14 +22,28 @@
       min-height: 100vh;
     }
 
-    h1 {
+    header {
       background: #ff9933;
       color: white;
       width: 100%;
-      text-align: center;
-      padding: 1rem 0;
-      margin: 0;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 1.2rem;
+      margin: 0;
+    }
+
+    #install-btn {
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
     }
 
     .container {
@@ -94,20 +108,6 @@
       color: #222;
     }
 
-    #install-banner {
-      display: none;
-      margin-top: 1rem;
-      padding: 1rem;
-      background: #dff0d8;
-      border: 1px solid #a5d6a7;
-      border-radius: 8px;
-      text-align: center;
-    }
-
-    #install-banner button {
-      background-color: #28a745;
-    }
-
     footer {
       margin-top: auto;
       padding: 1rem;
@@ -124,25 +124,23 @@
   </style>
 </head>
 <body>
-  <h1>📅 తెలుగు పంచాంగం - ఆగస్టు 2025</h1>
+  <header>
+    <h1>📅 తెలుగు పంచాంగం</h1>
+    <button id="install-btn" title="యాప్ ఇన్‌స్టాల్ చేయండి" style="display:none;">📥</button>
+  </header>
 
   <div class="container">
     <label for="pdate">తేదీ ఎంచుకోండి:</label>
-   <input
-  type="date"
-  id="pdate"
-  min="2023-01-01"
-  max="2050-12-31"
-  value="2025-08-01"
-/>
+    <input
+      type="date"
+      id="pdate"
+      min="2023-01-01"
+      max="2050-12-31"
+      value="2025-08-01"
+    />
 
     <div class="button-group">
       <button onclick="generatePanchang()">పంచాంగం చూపించు</button>
-  
-    </div>
-
-    <div id="install-banner">
-      <button onclick="installPWA()">📲 యాప్ ఇన్‌స్టాల్ చేయండి</button>
     </div>
 
     <div class="result" id="panchang-output">
@@ -162,51 +160,28 @@
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      document.getElementById('install-banner').style.display = 'block';
+      document.getElementById('install-btn').style.display = 'inline-block';
     });
 
-    function installPWA() {
+    document.getElementById('install-btn').addEventListener('click', () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then(choice => {
           if (choice.outcome === 'accepted') {
-            console.log('PWA installed');
+            console.log('User accepted the install prompt');
+          } else {
+            console.log('User dismissed the install prompt');
           }
           deferredPrompt = null;
-          document.getElementById('install-banner').style.display = 'none';
+          document.getElementById('install-btn').style.display = 'none';
         });
       }
-    }
+    });
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
-        .then(reg => console.log('SW Registered:', reg))
-        .catch(err => console.log('SW Failed:', err));
-    }
-
-    function downloadPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const date = document.getElementById("pdate").value;
-
-      if (!document.getElementById("panchang-output").style.display || document.getElementById("panchang-output").style.display === "none") {
-        alert("ముందుగా పంచాంగాన్ని చూపించండి.");
-        return;
-      }
-
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(16);
-      doc.text("📅 తెలుగు పంచాంగం", 20, 20);
-      doc.setFontSize(12);
-      doc.text("తేదీ: " + date, 20, 30);
-
-      doc.text("వారం: " + document.getElementById("day").textContent, 20, 45);
-      doc.text("తిథి: " + document.getElementById("tithi").textContent, 20, 55);
-      doc.text("నక్షత్రం: " + document.getElementById("nakshatra").textContent, 20, 65);
-      doc.text("యోగం: " + document.getElementById("yoga").textContent, 20, 75);
-      doc.text("కరణం: " + document.getElementById("karana").textContent, 20, 85);
-
-      doc.save(`Panchangam_${date}.pdf`);
+        .then(reg => console.log('Service Worker registered', reg))
+        .catch(err => console.error('Service Worker registration failed:', err));
     }
   </script>
 </body>

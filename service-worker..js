@@ -1,34 +1,37 @@
-const CACHE_NAME = 'panchangam-cache-v1';
+const CACHE_NAME = 'panchangam-v1';
+
 const urlsToCache = [
   '/',
-  '/index.html', // Or whatever you named your HTML file
+  '/index.html',
+  '/panchang.js',
   '/manifest.json',
   '/service-worker.js',
-  'https://cdn.tailwindcss.com',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap',
-  // Add your icon paths here
   '/icon-192x192.png',
   '/icon-512x512.png'
 ];
 
 self.addEventListener('install', (event) => {
+  console.log('[SW] Installing...');
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('[SW] Caching app shell');
+      return cache.addAll(urlsToCache);
+    })
   );
+});
+
+self.addEventListener('activate', (event) => {
+  console.log('[SW] Activated');
+  // Optional: clean up old caches here if needed
 });
 
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      })
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+      return fetch(event.request);
+    })
   );
 });
